@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Testing JWT</title>
+    <meta charset="utf-8" />
+
+    <script src="Scripts/jquery-3.0.0.min.js"></script>
+</head>
+<body>
+    <h1>Testing JWT</h1>
+    <button type="button" onclick="doLogin()" id="login">Login</button>
+    <button type="button" onclick="doCallApi()" id="callApi">Call Protected API ([Authorize])</button>
+    <button type="button" onclick="doCallAdminApi()" id="callAdminApi">Call Protected Admin API [Authorize(Roles = "Admin")]</button>
+    <button type="button" onclick="doRefreshToken()" name="refreshToken">Refresh Token</button>
+    <button type="button" onclick="doLogout()" name="logout">Logout</button>
+
+    <script type="text/javascript">
+
+        var jwtToken;
+        var refreshToken;
+
+        function doLogin() {
+            $.ajax({
+                url: "/login", // web.config --> appConfiguration -> tokenPath
+                data: {
+                    username: "Vahid",
+                    password: "1234",
+                    grant_type: "password"
+                },
+                type: 'POST', // POST `form encoded` data
+                contentType: 'application/x-www-form-urlencoded'
+            }).then(function (response) {
+                alert(JSON.stringify(response, null, '\t'));
+
+                jwtToken = response.access_token;
+                refreshToken = response.refresh_token;
+
+            }, function (xhr, status, error) {
+                var response = xhr.responseText;
+                alert(JSON.stringify(JSON.parse(response), null, '\t'));
+            });
+        }
+
+        function doRefreshToken() {
+            // obtaining new tokens using the refresh_token should happen only if the id_token has expired.
+            // it is a bad practice to call the endpoint to get a new token every time you do an API call.
+            $.ajax({
+                url: "/login", // web.config --> appConfiguration -> tokenPath
+                data: {
+                    grant_type: "refresh_token",
+                    refresh_token: refreshToken
+                },
+                type: 'POST', // POST `form encoded` data
+                contentType: 'application/x-www-form-urlencoded'
+            }).then(function (response) {
+                alert(JSON.stringify(response, null, '\t'));
+
+                jwtToken = response.access_token;
+                refreshToken = response.refresh_token;
+
+            }, function (xhr, status, error) {
+                var response = xhr.responseText;
+                alert(JSON.stringify(JSON.parse(response), null, '\t'));
+            });
+        }
+
+        function doCallApi() {
+            $.ajax({
+                headers: { 'Authorization': 'Bearer ' + jwtToken },
+                url: "/api/MyProtectedApi",
+                type: 'GET'
+            }).then(function (response) {
+                alert(JSON.stringify(response, null, '\t'));
+            }, function (xhr, status, error) {
+                var response = xhr.responseText;
+                alert(JSON.stringify(JSON.parse(response), null, '\t'));
+
+                if (refreshToken && xhr.status === 401) {
+                    //doRefreshToken();
+                }
+            });
+        }
+
+        function doCallAdminApi() {
+            $.ajax({
+                headers: { 'Authorization': 'Bearer ' + jwtToken },
+                url: "/api/MyProtectedAdminApi",
+                type: 'GET'
+            }).then(function (response) {
+                alert(JSON.stringify(response, null, '\t'));
+            }, function (xhr, status, error) {
+                var response = xhr.responseText;
+                alert(JSON.stringify(JSON.parse(response), null, '\t'));
+
+                if (refreshToken && xhr.status === 401) {
+                    //doRefreshToken();
+                }
+            });
+        }
+
+        function doLogout() {
+            $.ajax({
+                headers: { 'Authorization': 'Bearer ' + jwtToken },
+                url: "/api/user/logout",
+                type: 'GET'
+            }).then(function (response) {
+                alert(JSON.stringify(response, null, '\t'));
+
+                jwtToken = '';
+                refreshToken = '';
+            }, function (xhr, status, error) {
+                var response = xhr.responseText;
+                alert(JSON.stringify(JSON.parse(response), null, '\t'));
+            });
+        }
+    </script>
+</body>
+</html>
