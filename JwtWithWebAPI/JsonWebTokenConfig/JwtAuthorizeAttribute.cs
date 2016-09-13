@@ -38,7 +38,7 @@ namespace JwtWithWebAPI.JsonWebTokenConfig
             }
 
             var claimsIdentity = actionContext.RequestContext.Principal.Identity as ClaimsIdentity;
-            if (claimsIdentity == null)
+            if (claimsIdentity?.Claims == null || !claimsIdentity.Claims.Any())
             {
                 // this is not our issued token
                 this.HandleUnauthorizedRequest(actionContext);
