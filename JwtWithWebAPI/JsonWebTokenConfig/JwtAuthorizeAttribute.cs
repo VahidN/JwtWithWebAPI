@@ -55,12 +55,23 @@ namespace JwtWithWebAPI.JsonWebTokenConfig
                 return;
             }
 
+            if (UsersService == null)
+            {
+                throw new NullReferenceException($"{nameof(UsersService)} is null. Make sure ioc.Policies.SetAllProperties is configured and also IFilterProvider is replaced with SmWebApiFilterProvider.");
+            }
+
             var serialNumber = UsersService().GetSerialNumber(int.Parse(userId));
             if (serialNumber != serialNumberClaim.Value)
             {
                 // user has changed its password/roles/stat/IsActive
                 this.HandleUnauthorizedRequest(actionContext);
                 return;
+            }
+
+
+            if (TokenStoreService == null)
+            {
+                throw new NullReferenceException($"{nameof(TokenStoreService)} is null. Make sure ioc.Policies.SetAllProperties is configured and also IFilterProvider is replaced with SmWebApiFilterProvider.");
             }
 
             if (!TokenStoreService().IsValidToken(accessToken, int.Parse(userId)))

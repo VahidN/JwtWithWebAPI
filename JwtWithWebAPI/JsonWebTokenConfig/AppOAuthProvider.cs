@@ -26,9 +26,16 @@ namespace JwtWithWebAPI.JsonWebTokenConfig
             IAppJwtConfiguration configuration)
         {
             _usersService = usersService;
+            _usersService.CheckArgumentNull(nameof(_usersService));
+
             _tokenStoreService = tokenStoreService;
+            _tokenStoreService.CheckArgumentNull(nameof(_tokenStoreService));
+
             _securityService = securityService;
+            _securityService.CheckArgumentNull(nameof(_securityService));
+
             _configuration = configuration;
+            _configuration.CheckArgumentNull(nameof(_configuration));
         }
 
         public override Task GrantRefreshToken(OAuthGrantRefreshTokenContext context)

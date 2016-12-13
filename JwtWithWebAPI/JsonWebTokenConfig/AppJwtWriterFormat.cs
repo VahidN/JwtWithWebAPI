@@ -18,7 +18,10 @@ namespace JwtWithWebAPI.JsonWebTokenConfig
         public AppJwtWriterFormat(OAuthAuthorizationServerOptions options, IAppJwtConfiguration configuration)
         {
             _options = options;
+            _options.CheckArgumentNull(nameof(_options));
+
             _configuration = configuration;
+            _configuration.CheckArgumentNull(nameof(_configuration));
         }
 
         public string Protect(AuthenticationTicket data)

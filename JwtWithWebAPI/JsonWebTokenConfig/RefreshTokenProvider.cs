@@ -23,8 +23,13 @@ namespace JwtWithWebAPI.JsonWebTokenConfig
             Func<ISecurityService> securityService)
         {
             _configuration = configuration;
+            _configuration.CheckArgumentNull(nameof(_configuration));
+
             _tokenStoreService = tokenStoreService;
+            _tokenStoreService.CheckArgumentNull(nameof(_tokenStoreService));
+
             _securityService = securityService;
+            _securityService.CheckArgumentNull(nameof(_securityService));
         }
 
         public void Create(AuthenticationTokenCreateContext context)

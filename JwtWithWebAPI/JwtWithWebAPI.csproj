@@ -150,6 +150,7 @@
     <Compile Include="JsonWebTokenConfig\AppJwtWriterFormat.cs" />
     <Compile Include="JsonWebTokenConfig\AppOAuthOptions.cs" />
     <Compile Include="JsonWebTokenConfig\AppOAuthProvider.cs" />
+    <Compile Include="JsonWebTokenConfig\GuardExtensions.cs" />
     <Compile Include="JsonWebTokenConfig\JwtAuthorizeAttribute.cs" />
     <Compile Include="JsonWebTokenConfig\RefreshTokenProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
