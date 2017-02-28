@@ -25,13 +25,16 @@ namespace JwtWithWebAPI.Services
         public void UpdateUserToken(int userId, string accessTokenHash)
         {
             var token = _tokens.FirstOrDefault(x => x.OwnerUserId == userId);
-            token.AccessTokenHash = accessTokenHash;
+            if (token != null)
+            {
+                token.AccessTokenHash = accessTokenHash;
+            }
         }
 
         public void DeleteExpiredTokens()
         {
             var now = DateTime.UtcNow;
-            var userTokens = _tokens.Where(x => x.AccessTokenExpirationDateTime < now).ToList();
+            var userTokens = _tokens.Where(x => x.RefreshTokenExpiresUtc < now).ToList();
             foreach (var userToken in userTokens)
             {
                 _tokens.Remove(userToken);
@@ -65,7 +68,7 @@ namespace JwtWithWebAPI.Services
         {
             var accessTokenHash = _securityService.GetSha256Hash(accessToken);
             var userToken = _tokens.FirstOrDefault(x => x.AccessTokenHash == accessTokenHash && x.OwnerUserId == userId);
-            return (userToken != null) && (userToken.AccessTokenExpirationDateTime >= DateTime.UtcNow);
+            return userToken?.AccessTokenExpirationDateTime >= DateTime.UtcNow;
         }
     }
 }
