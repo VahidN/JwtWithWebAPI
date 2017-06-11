@@ -39,7 +39,7 @@
 
                 jwtToken = response.access_token;
                 refreshToken = response.refresh_token;
-
+                // setHeadersOfAllRequests();
             }, function (xhr, status, error) {
                 var response = xhr.responseText;
                 alert(JSON.stringify(JSON.parse(response), null, ' '));
@@ -68,7 +68,7 @@
 
                 jwtToken = response.access_token;
                 refreshToken = response.refresh_token;
-
+				// setHeadersOfAllRequests();
             }, function (xhr, status, error) {
                 var response = xhr.responseText;
                 alert(JSON.stringify(JSON.parse(response), null, ' '));
@@ -142,6 +142,14 @@
                 alert(JSON.stringify(JSON.parse(response), null, ' '));
             });
         }
+		
+		function setHeadersOfAllRequests() {
+			$.ajaxSetup({
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader('Authorization', 'Bearer ' + jwtToken);
+				}
+			});
+		}
     </script>
 </body>
 </html>
