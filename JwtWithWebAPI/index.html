@@ -11,6 +11,7 @@
     <button type="button" onclick="doLogin()" id="login">Login</button>
     <button type="button" onclick="doCallApi()" id="callApi">Call Protected API ([Authorize])</button>
     <button type="button" onclick="doCallAdminApi()" id="callAdminApi">Call Protected Admin API [Authorize(Roles = "Admin")]</button>
+    <button type="button" onclick="doCallAdminApiUsingGet()" id="callAdminApiUsingGet">Call Protected Admin API, Test $.ajaxSetup</button>
     <button type="button" onclick="doRefreshToken()" name="refreshToken">Refresh Token</button>
     <button type="button" onclick="doLogout()" name="logout">Logout</button>
 
@@ -19,8 +20,7 @@
         var jwtToken;
         var refreshToken;
 
-        function isNullOrEmpty(value)
-        {
+        function isNullOrEmpty(value) {
             return (typeof value == 'undefined' || !value);
         }
 
@@ -39,7 +39,7 @@
 
                 jwtToken = response.access_token;
                 refreshToken = response.refresh_token;
-                // setHeadersOfAllRequests();
+                setHeadersOfAllRequests();
             }, function (xhr, status, error) {
                 var response = xhr.responseText;
                 alert(JSON.stringify(JSON.parse(response), null, ' '));
@@ -47,8 +47,7 @@
         }
 
         function doRefreshToken() {
-            if (isNullOrEmpty(refreshToken))
-            {
+            if (isNullOrEmpty(refreshToken)) {
                 alert('Please login first.');
                 return;
             }
@@ -68,7 +67,7 @@
 
                 jwtToken = response.access_token;
                 refreshToken = response.refresh_token;
-				// setHeadersOfAllRequests();
+                setHeadersOfAllRequests();
             }, function (xhr, status, error) {
                 var response = xhr.responseText;
                 alert(JSON.stringify(JSON.parse(response), null, ' '));
@@ -76,8 +75,7 @@
         }
 
         function doCallApi() {
-            if (isNullOrEmpty(jwtToken))
-            {
+            if (isNullOrEmpty(jwtToken)) {
                 alert('Please login first.');
                 return;
             }
@@ -99,8 +97,7 @@
         }
 
         function doCallAdminApi() {
-            if (isNullOrEmpty(jwtToken))
-            {
+            if (isNullOrEmpty(jwtToken)) {
                 alert('Please login first.');
                 return;
             }
@@ -142,14 +139,33 @@
                 alert(JSON.stringify(JSON.parse(response), null, ' '));
             });
         }
-		
-		function setHeadersOfAllRequests() {
-			$.ajaxSetup({
-				beforeSend: function(xhr) {
-					xhr.setRequestHeader('Authorization', 'Bearer ' + jwtToken);
-				}
-			});
-		}
+
+        function setHeadersOfAllRequests() {
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + jwtToken);
+                }
+            });
+        }
+
+        function doCallAdminApiUsingGet() {
+            if (isNullOrEmpty(jwtToken)) {
+                alert('Please login first.');
+                return;
+            }
+            // Testing `setHeadersOfAllRequests` without setting the `headers` directly
+            $.get("/api/MyProtectedAdminApi")
+             .then(function (response) {
+                 alert(JSON.stringify(response, null, ' '));
+             }, function (xhr, status, error) {
+                 var response = xhr.responseText;
+                 alert(JSON.stringify(JSON.parse(response), null, ' '));
+
+                 if (refreshToken && xhr.status === 401) {
+                     //doRefreshToken();
+                 }
+             });
+        }
     </script>
 </body>
 </html>
