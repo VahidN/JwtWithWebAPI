@@ -60,20 +60,22 @@ namespace JwtWithWebAPI.JsonWebTokenConfig
             return Task.FromResult(0);
         }
 
-        public override Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
+        public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
+            // how to get additional parameters
+            var form = await context.Request.ReadFormAsync();
+            var key1 = form["my-very-special-key1"];
+
             var user = _usersService().FindUser(context.UserName, context.Password);
             if (user == null)
             {
                 context.SetError("invalid_grant", "The user name or password is incorrect.");
                 context.Rejected();
-                return Task.FromResult(0);
+                return;
             }
 
             var identity = setClaimsIdentity(context, user);
             context.Validated(identity);
-
-            return Task.FromResult(0);
         }
 
         public override Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
