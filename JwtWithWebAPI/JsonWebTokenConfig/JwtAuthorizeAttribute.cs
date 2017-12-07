@@ -63,7 +63,7 @@ namespace JwtWithWebAPI.JsonWebTokenConfig
             var serialNumber = UsersService().GetSerialNumber(int.Parse(userId));
             if (serialNumber != serialNumberClaim.Value)
             {
-                // user has changed its password/roles/stat/IsActive
+                // user has changed his/her password/roles/stat/IsActive
                 this.HandleUnauthorizedRequest(actionContext);
                 return;
             }

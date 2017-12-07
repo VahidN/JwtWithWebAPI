@@ -67,7 +67,7 @@ namespace JwtWithWebAPI.JsonWebTokenConfig
             var key1 = form["my-very-special-key1"];
 
             var user = _usersService().FindUser(context.UserName, context.Password);
-            if (user == null)
+            if (user == null || !user.IsActive)
             {
                 context.SetError("invalid_grant", "The user name or password is incorrect.");
                 context.Rejected();

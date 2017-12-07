@@ -11,9 +11,9 @@ namespace JwtWithWebAPI.JsonWebTokenConfig
         {
             this.AuthenticationMode = AuthenticationMode.Active;
             this.AllowedAudiences = new[] { config.JwtAudience };
-            this.IssuerSecurityTokenProviders = new[]
+            this.IssuerSecurityKeyProviders = new[]
             {
-                new SymmetricKeyIssuerSecurityTokenProvider(
+                new SymmetricKeyIssuerSecurityKeyProvider(
                     issuer: config.JwtIssuer,
                     base64Key: Convert.ToBase64String(Encoding.UTF8.GetBytes(config.JwtKey)))
             };
