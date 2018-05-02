@@ -4,7 +4,17 @@
     <title>Testing JWT</title>
     <meta charset="utf-8" />
 
-    <script src="Scripts/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="Scripts/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="Scripts/jwt-decode.js"></script>
+    <style>
+        .highlight {
+            padding: 1rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            background-color: #f7f7f9;
+            -ms-overflow-style: -ms-autohiding-scrollbar;
+        }
+    </style>
 </head>
 <body>
     <h1>Testing JWT</h1>
@@ -15,7 +25,10 @@
     <button type="button" onclick="doRefreshToken()" name="refreshToken">Refresh Token</button>
     <button type="button" onclick="doLogout()" name="logout">Logout</button>
 
-    <script type="text/javascript">
+    <h2>Decoded Access Token</h2>
+    <div class="highlight"><pre><code id="jwtInfo"></code></pre></div>
+
+<script type="text/javascript">
 
         var jwtToken;
         var refreshToken;
@@ -41,6 +54,8 @@
                 jwtToken = response.access_token;
                 refreshToken = response.refresh_token;
                 setHeadersOfAllRequests();
+                console.log(jwt_decode(jwtToken));
+                $("#jwtInfo").text(JSON.stringify(jwt_decode(jwtToken)).replace(/,/g, ',\n'));
             }, function (xhr, status, error) {
                 var response = xhr.responseText;
                 alert(JSON.stringify(JSON.parse(response), null, ' '));
@@ -69,6 +84,8 @@
                 jwtToken = response.access_token;
                 refreshToken = response.refresh_token;
                 setHeadersOfAllRequests();
+                console.log(jwt_decode(jwtToken));
+                $("#jwtInfo").text(JSON.stringify(jwt_decode(jwtToken)).replace(/,/g, ',\n'));
             }, function (xhr, status, error) {
                 var response = xhr.responseText;
                 alert(JSON.stringify(JSON.parse(response), null, ' '));

@@ -101,6 +101,10 @@ namespace JwtWithWebAPI.JsonWebTokenConfig
             // custom data
             identity.AddClaim(new Claim(ClaimTypes.UserData, user.UserId.ToString()));
 
+            // custom data
+            identity.AddClaim(new Claim("DisplayName", user.DisplayName));
+
+
             var roles = user.Roles;
             foreach (var role in roles)
             {
