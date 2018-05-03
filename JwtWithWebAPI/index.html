@@ -25,10 +25,21 @@
     <button type="button" onclick="doRefreshToken()" name="refreshToken">Refresh Token</button>
     <button type="button" onclick="doLogout()" name="logout">Logout</button>
 
-    <h2>Decoded Access Token</h2>
-    <div class="highlight"><pre><code id="jwtInfo"></code></pre></div>
+    <div id="ajaxResponse" style="display: none;">
+        <h2>Response</h2>
+        <div class="highlight">
+            <pre><code id="ajaxResponseInfo"></code></pre>
+        </div>
+    </div>
 
-<script type="text/javascript">
+    <div id="decodedToken" style="display: none;">
+        <h2>Decoded Access Token</h2>
+        <div class="highlight">
+            <pre><code id="jwtInfo"></code></pre>
+        </div>
+    </div>
+
+    <script type="text/javascript">
 
         var jwtToken;
         var refreshToken;
@@ -49,13 +60,11 @@
                 type: 'POST', // POST `form encoded` data
                 contentType: 'application/x-www-form-urlencoded'
             }).then(function (response) {
-                alert(JSON.stringify(response, null, ' '));
-
+                showResponse(response);
                 jwtToken = response.access_token;
                 refreshToken = response.refresh_token;
                 setHeadersOfAllRequests();
-                console.log(jwt_decode(jwtToken));
-                $("#jwtInfo").text(JSON.stringify(jwt_decode(jwtToken)).replace(/,/g, ',\n'));
+                showDecodedToken();
             }, function (xhr, status, error) {
                 var response = xhr.responseText;
                 alert(JSON.stringify(JSON.parse(response), null, ' '));
@@ -79,13 +88,11 @@
                 type: 'POST', // POST `form encoded` data
                 contentType: 'application/x-www-form-urlencoded'
             }).then(function (response) {
-                alert(JSON.stringify(response, null, ' '));
-
+                showResponse(response);
                 jwtToken = response.access_token;
                 refreshToken = response.refresh_token;
                 setHeadersOfAllRequests();
-                console.log(jwt_decode(jwtToken));
-                $("#jwtInfo").text(JSON.stringify(jwt_decode(jwtToken)).replace(/,/g, ',\n'));
+                showDecodedToken();
             }, function (xhr, status, error) {
                 var response = xhr.responseText;
                 alert(JSON.stringify(JSON.parse(response), null, ' '));
@@ -103,7 +110,7 @@
                 url: "/api/MyProtectedApi",
                 type: 'GET'
             }).then(function (response) {
-                alert(JSON.stringify(response, null, ' '));
+                showResponse(response);
             }, function (xhr, status, error) {
                 var response = xhr.responseText;
                 alert(JSON.stringify(JSON.parse(response), null, ' '));
@@ -125,7 +132,7 @@
                 url: "/api/MyProtectedAdminApi",
                 type: 'GET'
             }).then(function (response) {
-                alert(JSON.stringify(response, null, ' '));
+                showResponse(response);
             }, function (xhr, status, error) {
                 var response = xhr.responseText;
                 alert(JSON.stringify(JSON.parse(response), null, ' '));
@@ -148,7 +155,7 @@
                 url: "/api/user/logout",
                 type: 'GET'
             }).then(function (response) {
-                alert(JSON.stringify(response, null, ' '));
+                showResponse(response);
 
                 jwtToken = '';
                 refreshToken = '';
@@ -174,7 +181,7 @@
             // Testing `setHeadersOfAllRequests` without setting the `headers` directly
             $.get("/api/MyProtectedAdminApi")
              .then(function (response) {
-                 alert(JSON.stringify(response, null, ' '));
+                 showResponse(response);
              }, function (xhr, status, error) {
                  var response = xhr.responseText;
                  alert(JSON.stringify(JSON.parse(response), null, ' '));
@@ -183,6 +190,20 @@
                      //doRefreshToken();
                  }
              });
+        }
+
+        function showDecodedToken() {
+            $("#decodedToken").show();
+            let decodedToken = jwt_decode(jwtToken);
+            console.log(decodedToken);
+            $("#jwtInfo").text(JSON.stringify(decodedToken).replace(/,/g, ',\n'));
+        }
+
+        function showResponse(response) {
+            $("#ajaxResponse").show();
+            let responseStr = JSON.stringify(response, null, ' ');
+            console.log("response", response);
+            $("#ajaxResponseInfo").text(responseStr);
         }
     </script>
 </body>
